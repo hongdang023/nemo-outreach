@@ -8,6 +8,7 @@ export const targets = sqliteTable("targets", {
   website: text("website").notNull().default(""),
   contactRole: text("contact_role").notNull().default(""),
   contactChannel: text("contact_channel").notNull().default(""),
+  contactStatus: text("contact_status").notNull().default("Research needed"),
   valueProp: text("value_prop").notNull().default(""),
   nextAction: text("next_action").notNull().default(""),
   nextActionDate: text("next_action_date").notNull().default("Chưa đặt"),
@@ -18,6 +19,7 @@ export const targets = sqliteTable("targets", {
   readiness: integer("readiness").notNull().default(15),
   score: integer("score").notNull().default(60),
   learners: integer("learners").notNull().default(0),
+  trials: integer("trials").notNull().default(0),
   notes: text("notes").notNull().default(""),
   updatedAt: text("updated_at").notNull(),
 });

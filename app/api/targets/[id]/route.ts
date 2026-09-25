@@ -3,7 +3,7 @@ import { getDb } from "@/db";
 import { activities, targets } from "@/db/schema";
 import { SEED_TARGETS, STAGES, TARGET_TYPES, type OutreachTarget } from "@/lib/targets";
 
-const editable = ["name", "type", "city", "website", "contactRole", "contactChannel", "valueProp", "nextAction", "nextActionDate", "stage", "fit", "access", "trust", "readiness", "score", "learners", "notes"] as const;
+const editable = ["name", "type", "city", "website", "contactRole", "contactChannel", "contactStatus", "valueProp", "nextAction", "nextActionDate", "stage", "fit", "access", "trust", "readiness", "score", "learners", "trials", "notes"] as const;
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
   try {

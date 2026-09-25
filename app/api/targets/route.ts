@@ -4,14 +4,16 @@ import { targets } from "@/db/schema";
 import { SEED_TARGETS, type OutreachTarget, type TargetType } from "@/lib/targets";
 
 function mergeTarget(row: typeof targets.$inferSelect): OutreachTarget {
-  return row as OutreachTarget;
+  return { ...row, trials: row.trials || 0, contactStatus: (row.contactStatus || "Research needed") as OutreachTarget["contactStatus"] } as OutreachTarget;
 }
 
 export async function GET() {
   try {
     const persisted = await getDb().select().from(targets).orderBy(desc(targets.updatedAt));
     const byId = new Map(SEED_TARGETS.map((target) => [target.id, target]));
-    for (const row of persisted) byId.set(row.id, mergeTarget(row));
+    for (const row of persisted) {
+      if (byId.has(row.id) || ["Experts", "Creators", "Alumni", "Schools", "Communities", "Media"].includes(row.type)) byId.set(row.id, mergeTarget(row));
+    }
     return Response.json({ targets: [...byId.values()] });
   } catch (error) {
     console.error("targets:list", error);
@@ -29,11 +31,12 @@ export async function POST(request: Request) {
     const target: typeof targets.$inferInsert = {
       id: crypto.randomUUID(),
       name,
-      type: (payload.type || "School") as TargetType,
+      type: (payload.type || "Schools") as TargetType,
       city: payload.city?.trim() || "Việt Nam",
       website: payload.website?.trim() || "",
       contactRole: payload.contactRole?.trim() || "Partnership lead",
       contactChannel: payload.contactChannel?.trim() || "Chưa research",
+      contactStatus: payload.contactStatus || "Research needed",
       valueProp: payload.valueProp?.trim() || "IELTS Diagnostic miễn phí cho 100 learners",
       nextAction: "Research đúng contact và chuẩn bị lý do họ nên quan tâm.",
       nextActionDate: "Chưa đặt",
@@ -44,6 +47,7 @@ export async function POST(request: Request) {
       readiness: 15,
       score: 60,
       learners: 0,
+      trials: 0,
       notes: "",
       updatedAt: now,
     };
