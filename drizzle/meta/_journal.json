@@ -15,6 +15,20 @@
       "when": 1790359745276,
       "tag": "0001_handy_stellaris",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1790489365985,
+      "tag": "0002_chubby_nova",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1790534974464,
+      "tag": "0003_young_romulus",
+      "breakpoints": true
     }
   ]
 }
