@@ -10,8 +10,12 @@ function mergeTarget(row: typeof targets.$inferSelect): OutreachTarget {
 
 export async function GET() {
   try {
-    const persisted = await getDb().select().from(targets).orderBy(desc(targets.updatedAt));
     const researched = RESEARCH_CANDIDATES.filter(candidate => TARGET_TYPES.includes(candidate.type));
+    let persisted = await getDb().select().from(targets).orderBy(desc(targets.updatedAt));
+    if (persisted.length === 0 && researched.length > 0) {
+      await getDb().insert(targets).values(researched as typeof targets.$inferInsert[]).onConflictDoNothing();
+      persisted = await getDb().select().from(targets).orderBy(desc(targets.updatedAt));
+    }
     const byId = new Map(researched.map(candidate => [candidate.id, candidate]));
     for (const row of persisted.filter(row => TARGET_TYPES.includes(row.type as TargetType))) byId.set(row.id, mergeTarget(row));
     return Response.json({ targets: [...byId.values()] });
