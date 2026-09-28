@@ -1,0 +1,12 @@
+name = "nemo-outreach"
+main = "dist/server/index.js"
+compatibility_date = "2026-05-15"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "dist/client"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nemo-outreach-db"
+database_id = "b5e70f21-9a7f-4cc3-b9ad-0a3787fa7896"
