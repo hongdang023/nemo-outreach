@@ -1,4 +1,3 @@
-import { desc } from "drizzle-orm";
 import { getDb } from "@/db";
 import { targets } from "@/db/schema";
 import { TARGET_TYPES, type OutreachTarget, type TargetType } from "@/lib/targets";
@@ -11,16 +10,16 @@ function mergeTarget(row: typeof targets.$inferSelect): OutreachTarget {
 export async function GET() {
   try {
     const researched = RESEARCH_CANDIDATES.filter(candidate => TARGET_TYPES.includes(candidate.type));
-    let persisted = await getDb().select().from(targets).orderBy(desc(targets.updatedAt));
+    let persisted = await getDb().select().from(targets);
     if (persisted.length === 0 && researched.length > 0) {
       await getDb().insert(targets).values(researched as typeof targets.$inferInsert[]).onConflictDoNothing();
-      persisted = await getDb().select().from(targets).orderBy(desc(targets.updatedAt));
+      persisted = await getDb().select().from(targets);
     }
     const byId = new Map(researched.map(candidate => [candidate.id, candidate]));
     for (const row of persisted.filter(row => TARGET_TYPES.includes(row.type as TargetType))) byId.set(row.id, mergeTarget(row));
     return Response.json({ targets: [...byId.values()] });
   } catch (error) {
-    console.error("targets:list", error);
+    console.error("targets:list", error instanceof Error ? error.message : String(error), error);
     return Response.json({ targets: RESEARCH_CANDIDATES, persistence: "unavailable" });
   }
 }
